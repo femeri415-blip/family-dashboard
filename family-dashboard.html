@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家族ダッシュボード</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAoNO0aIcPllB6Lc5hpiUK_2oIiA3gbX44",
+  authDomain: "tr-dashboard-8fc50.firebaseapp.com",
+  databaseURL: "https://tr-dashboard-8fc50-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tr-dashboard-8fc50",
+  storageBucket: "tr-dashboard-8fc50.firebasestorage.app",
+  messagingSenderId: "347802063889",
+  appId: "1:347802063889:web:bc29cbedd77cde27c94db0"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ---- Firebase helpers ----
+window._db = db;
+window._ref = ref;
+window._set = set;
+window._remove = remove;
+window._push = push;
+window._onValue = onValue;
+
+// ---- Firebase listeners (リアルタイム同期) ----
+onValue(ref(db, 'tasks'), snap => {
+  const val = snap.val();
+  window.tasks = val ? Object.entries(val).map(([k,v]) => ({...v, _key:k})) : [];
+  if(typeof renderTasks === 'function') renderTasks();
+  if(typeof renderCalendar === 'function') renderCalendar();
+});
+
+onValue(ref(db, 'budgets'), snap => {
+  const val = snap.val();
+  window.budgets = val ? Object.entries(val).map(([k,v]) => ({...v, _key:k})) : [];
+  if(typeof renderBudget === 'function') renderBudget();
+});
+
+onValue(ref(db, 'events'), snap => {
+  const val = snap.val();
+  window.events = val ? Object.entries(val).map(([k,v]) => ({...v, _key:k})) : [];
+  if(typeof renderCalendar === 'function') renderCalendar();
+});
+
+// 同期完了フラグ
+window._fbReady = true;
+</script>
+<style>
+  :root {
+    --bg: #F7F4EF;
+    --card: #FFFFFF;
+    --accent1: #E8785A;
+    --accent2: #5A8FE8;
+    --accent3: #5AC87A;
+    --text: #1A1A1A;
+    --muted: #888;
+    --border: #E5E0D8;
+    --shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  header {
+    background: var(--text);
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+  }
+  header span { font-size: 0.8rem; color: #aaa; }
+
+  nav {
+    display: flex;
+    gap: 4px;
+    padding: 16px 24px 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+  nav button {
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: var(--muted);
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    margin-bottom: -1px;
+  }
+  nav button.active {
+    color: var(--accent1);
+    border-bottom: 2px solid var(--accent1);
+    font-weight: 500;
+  }
+
+  main { padding: 24px; max-width: 900px; margin: 0 auto; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ===== TASK ===== */
+  .add-form {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .add-form h3 { font-size: 0.85rem; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .form-row input, .form-row select {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.9rem;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .form-row input[type="text"] { flex: 2; min-width: 140px; }
+  .form-row input[type="date"] { min-width: 130px; }
+  .form-row input[type="time"] { min-width: 90px; flex: 1; }
+  .form-row select { min-width: 80px; }
+  /* スマホ: タイトルだけ全幅、他は横並びキープ */
+  @media(max-width: 600px) {
+    .form-row input[type="text"] { flex-basis: 100%; }
+  }
+  .btn {
+    padding: 9px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: var(--accent1); color: white; }
+  .btn-secondary { background: var(--accent2); color: white; }
+  .btn-success { background: var(--accent3); color: white; }
+
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+  .task-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.15s;
+  }
+  .task-card:hover { transform: translateY(-1px); }
+  .task-card.done { opacity: 0.5; }
+  .task-card.done .task-title { text-decoration: line-through; }
+  .tag {
+    font-size: 0.72rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .tag-self { background: #FDE8E2; color: var(--accent1); }
+  .tag-wife { background: #E2EAF2; color: var(--accent2); }
+  .tag-family { background: #E8F5E2; color: #3A8A3A; }
+  .tag-sumiko { background: #F0E6FA; color: #8B4FBF; }
+  .tag-airi   { background: #FFF6DC; color: #A07800; }
+  .tag-uruha  { background: #FCE8F0; color: #C0527A; }
+  .tag-noa    { background: #E0F5F5; color: #2A8A8A; }
+  .tag-todo { background: #F5F0EA; color: #888; }
+  .tag-doing { background: #FFF3CD; color: #B07D00; }
+  .tag-done { background: #E2F5E8; color: #2E7D46; }
+  .task-title { flex: 1; font-size: 0.95rem; }
+  .task-date { font-size: 0.78rem; color: var(--muted); }
+  .task-actions button {
+    background: none; border: none; cursor: pointer; font-size: 1rem; padding: 2px 4px;
+  }
+
+  /* ===== BUDGET ===== */
+  .budget-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .summary-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: var(--shadow);
+    text-align: center;
+  }
+  .summary-card .label { font-size: 0.78rem; color: var(--muted); margin-bottom: 6px; }
+  .summary-card .amount { font-size: 1.4rem; font-weight: 700; }
+  .amount.income { color: var(--accent3); }
+  .amount.expense { color: var(--accent1); }
+  .amount.balance { color: var(--accent2); }
+  .budget-list { display: flex; flex-direction: column; gap: 8px; }
+  .budget-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    font-size: 0.9rem;
+  }
+  .budget-item .dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-income { background: var(--accent3); }
+  .dot-expense { background: var(--accent1); }
+  .budget-item .desc { flex: 1; }
+  .budget-item .bdate { font-size: 0.78rem; color: var(--muted); }
+  .budget-item .bamount { font-weight: 600; }
+  .income-amount { color: var(--accent3); }
+  .expense-amount { color: var(--accent1); }
+
+  /* ===== CALENDAR ===== */
+  .cal-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 16px;
+  }
+  .cal-header h2 { font-size: 1.1rem; flex: 1; }
+  .cal-header button {
+    background: none; border: 1px solid var(--border); border-radius: 8px;
+    padding: 6px 12px; cursor: pointer; font-size: 0.85rem; color: var(--text);
+  }
+  .cal-grid {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .cal-days-header {
+    display: grid; grid-template-columns: repeat(7, 1fr);
+    text-align: center; font-size: 0.78rem; color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .cal-days {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+  }
+  .cal-day {
+    aspect-ratio: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .cal-day:hover { background: var(--bg); }
+  .cal-day.today { background: var(--accent1); color: white; }
+  .cal-day.other-month { color: #ccc; }
+  .cal-day .dots { display: flex; gap: 2px; margin-top: 2px; flex-wrap: wrap; justify-content: center; }
+  .cal-day .event-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent2);
+  }
+  .cal-day .task-dot {
+    width: 5px; height: 5px; border-radius: 50%; background: var(--accent1);
+  }
+  .events-list { display: flex; flex-direction: column; gap: 8px; }
+  .event-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 12px 16px;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 0.9rem;
+  }
+  .event-color { width: 4px; border-radius: 4px; align-self: stretch; flex-shrink: 0; }
+  .event-info { flex: 1; }
+  .event-title { font-weight: 500; }
+  .event-meta { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
+  .event-item.task-linked { border-left: 3px solid var(--accent1); }
+  .event-item.task-linked .event-color { background: var(--accent1) !important; }
+  .tag-deadline { background: #FDE8E2; color: var(--accent1); font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; }
+  .event-del { background: none; border: none; cursor: pointer; color: #ccc; font-size: 1rem; }
+  .event-del:hover { color: var(--accent1); }
+  .event-item.task-linked { background: #FFF8F6; }
+  .tag-deadline { background: #FDE8E2; color: var(--accent1); font-size: 0.7rem; padding: 2px 6px; border-radius: 10px; font-weight: 500; }
+  .goto-cal { font-size: 0.75rem; color: var(--accent2); cursor: pointer; border: none; background: none; text-decoration: underline; padding: 0; font-family: 'Noto Sans JP', sans-serif; }
+
+  .btn-scan {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-scan:hover { background: var(--bg); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .scanning { animation: pulse 1.2s infinite; }
+
+  @media(max-width: 600px) {
+    .budget-summary { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏠 家族ダッシュボード</h1>
+  <span id="today-label"></span>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('task', this)">📝 タスク</button>
+  <button onclick="showTab('budget', this)">💰 収支</button>
+  <button onclick="showTab('calendar', this)">📅 日程</button>
+</nav>
+
+<main>
+
+<!-- TASK -->
+<div id="task" class="section active">
+  <div class="add-form">
+    <h3>タスクを追加</h3>
+    <div class="form-row">
+      <input type="text" id="task-title" placeholder="タスク内容を入力…" style="flex:1;min-width:0;">
+      <select id="task-owner" style="flex:0 0 auto;width:90px;">
+        <option value="tomaro">伴麿</option>
+        <option value="rika">理香</option>
+        <option value="family">家族</option>
+        <option value="sumiko">すみこ</option>
+        <option value="airi">あいり</option>
+        <option value="uruha">うるは</option>
+        <option value="noa">のあ</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:8px;">
+      <input type="date" id="task-due" style="flex:1;min-width:0;">
+      <input type="time" id="task-time-start" style="flex:1;min-width:0;">
+      <span style="color:var(--muted);font-size:0.85rem;white-space:nowrap;">〜</span>
+      <input type="time" id="task-time-end" style="flex:1;min-width:0;">
+      <button class="btn btn-primary" onclick="addTask()" style="white-space:nowrap;">追加</button>
+    </div>
+  </div>
+  <div class="task-list" id="task-list"></div>
+</div>
+
+<!-- BUDGET -->
+<div id="budget" class="section">
+  <div class="budget-summary">
+    <div class="summary-card">
+      <div class="label">収入合計</div>
+      <div class="amount income" id="total-income">¥0</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">支出合計</div>
+      <div class="amount expense" id="total-expense">¥0</div>
+    </div>
+    <div class="summary-card">
+      <div class="label">残高</div>
+      <div class="amount balance" id="total-balance">¥0</div>
+    </div>
+  </div>
+  <div class="add-form">
+    <h3>収支を追加</h3>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <label class="btn btn-scan" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+        📷 カメラで撮影
+        <input type="file" accept="image/*" capture="environment" style="display:none;" onchange="scanReceipt(this)">
+      </label>
+      <label class="btn btn-scan" style="cursor:pointer;display:flex;align-items:center;gap:6px;">
+        🖼️ 写真から選択
+        <input type="file" accept="image/*" style="display:none;" onchange="scanReceipt(this)">
+      </label>
+    </div>
+    <div id="scan-status" style="display:none;background:#FFF8F6;border:1px solid #F5D5CC;border-radius:8px;padding:10px 14px;margin-bottom:12px;font-size:0.85rem;color:var(--accent1);">
+      <span id="scan-status-text"></span>
+    </div>
+    <div id="scan-preview" style="display:none;margin-bottom:12px;text-align:center;">
+      <img id="scan-img" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid var(--border);">
+    </div>
+    <div class="form-row">
+      <select id="budget-type">
+        <option value="income">収入</option>
+        <option value="expense">支出</option>
+      </select>
+      <input type="text" id="budget-desc" placeholder="内容（例：食費、給料）">
+      <input type="number" id="budget-amount" placeholder="金額" min="0">
+      <input type="date" id="budget-date">
+      <button class="btn btn-success" onclick="addBudget()">追加</button>
+    </div>
+  </div>
+  <div class="budget-list" id="budget-list"></div>
+</div>
+
+<!-- CALENDAR -->
+<div id="calendar" class="section">
+  <div class="add-form">
+    <h3>予定を追加</h3>
+    <div class="form-row">
+      <input type="text" id="event-title" placeholder="予定のタイトル" style="flex:1;min-width:0;">
+      <select id="event-who" style="flex:0 0 auto;width:90px;">
+        <option value="tomaro">伴麿</option>
+        <option value="rika">理香</option>
+        <option value="family">家族</option>
+        <option value="sumiko">すみこ</option>
+        <option value="airi">あいり</option>
+        <option value="uruha">うるは</option>
+        <option value="noa">のあ</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-top:8px;">
+      <input type="date" id="event-date" style="flex:1;min-width:0;">
+      <input type="time" id="event-time-start" style="flex:1;min-width:0;">
+      <span style="color:var(--muted);font-size:0.85rem;white-space:nowrap;">〜</span>
+      <input type="time" id="event-time-end" style="flex:1;min-width:0;">
+      <button class="btn btn-secondary" onclick="addEvent()" style="white-space:nowrap;">追加</button>
+    </div>
+  </div>
+  <div class="cal-grid">
+    <div class="cal-header">
+      <button onclick="prevMonth()">◀</button>
+      <h2 id="cal-month-label"></h2>
+      <button onclick="nextMonth()">▶</button>
+    </div>
+    <div class="cal-days-header">
+      <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+    </div>
+    <div class="cal-days" id="cal-days"></div>
+  </div>
+  <div class="events-list" id="events-list"></div>
+</div>
+
+</main>
+
+<script>
+// ---- Firebase CRUD ----
+function fbAdd(collection, data) {
+  const newRef = _push(_ref(_db, collection));
+  _set(newRef, data);
+}
+function fbDelete(collection, key) {
+  _remove(_ref(_db, `${collection}/${key}`));
+}
+function fbUpdate(collection, key, data) {
+  _set(_ref(_db, `${collection}/${key}`), data);
+}
+
+// グローバルデータ（Firebaseリスナーが更新）
+window.tasks = [];
+window.budgets = [];
+window.events = [];
+let calYear, calMonth;
+
+// ---- Init ----
+const now = new Date();
+calYear = now.getFullYear();
+calMonth = now.getMonth();
+
+document.getElementById('today-label').textContent = now.toLocaleDateString('ja-JP', {year:'numeric',month:'long',day:'numeric'});
+
+const todayStr = now.toISOString().slice(0,10);
+['task-due','budget-date','event-date'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.value = todayStr;
+});
+
+// ---- Owner helpers ----
+const OWNER_LABELS = { tomaro:'伴麿', rika:'理香', family:'家族', sumiko:'すみこ', airi:'あいり', uruha:'うるは', noa:'のあ' };
+const OWNER_TAGS   = { tomaro:'tag-self', rika:'tag-wife', family:'tag-family', sumiko:'tag-sumiko', airi:'tag-airi', uruha:'tag-uruha', noa:'tag-noa' };
+function ownerLabel(o) { return OWNER_LABELS[o] || o; }
+function ownerTagClass(o) { return OWNER_TAGS[o] || 'tag-self'; }
+
+renderTasks();
+renderBudget();
+renderCalendar();
+
+// ---- Nav ----
+function showTab(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ---- TASKS ----
+function addTask() {
+  const title = document.getElementById('task-title').value.trim();
+  if(!title) return;
+  fbAdd('tasks', {
+    title,
+    owner: document.getElementById('task-owner').value,
+    due: document.getElementById('task-due').value,
+    timeStart: document.getElementById('task-time-start').value,
+    timeEnd: document.getElementById('task-time-end').value,
+    status: 'todo',
+    createdAt: Date.now()
+  });
+  document.getElementById('task-title').value = '';
+  document.getElementById('task-time-start').value = '';
+  document.getElementById('task-time-end').value = '';
+}
+
+function toggleTask(key, currentStatus) {
+  const t = tasks.find(t => t._key === key);
+  if(!t) return;
+  fbUpdate('tasks', key, {...t, status: currentStatus === 'done' ? 'todo' : 'done', _key: undefined});
+}
+
+function deleteTask(key) {
+  fbDelete('tasks', key);
+}
+
+function cycleStatus(key) {
+  const t = tasks.find(t => t._key === key);
+  if(!t) return;
+  const order = ['todo','doing','done'];
+  const next = order[(order.indexOf(t.status)+1) % order.length];
+  fbUpdate('tasks', key, {...t, status: next, _key: undefined});
+}
+
+function renderTasks() {
+  const list = document.getElementById('task-list');
+  if(!tasks.length) { list.innerHTML = '<div class="empty">タスクがありません。追加してみましょう！</div>'; return; }
+  const sorted = [...tasks].sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+  list.innerHTML = sorted.map(t => `
+    <div class="task-card ${t.status === 'done' ? 'done' : ''}">
+      <input type="checkbox" ${t.status==='done'?'checked':''} onchange="toggleTask('${t._key}','${t.status}')">
+      <span class="task-title">${esc(t.title)}</span>
+      <span class="tag ${ownerTagClass(t.owner)}">${ownerLabel(t.owner)}</span>
+      <span class="tag ${statusTag(t.status)}">${statusLabel(t.status)}</span>
+      ${t.due ? `<span class="task-date">📅 ${t.due}${t.timeStart ? ' ⏰ ' + t.timeStart + (t.timeEnd ? '〜' + t.timeEnd : '') : ''}</span>` : ''}
+      ${t.due && t.status !== 'done' ? `<button class="goto-cal" onclick="goToCalendar('${t.due}')">📆 カレンダーで確認</button>` : ''}
+      <div class="task-actions">
+        ${t.status!=='done'?`<button onclick="cycleStatus('${t._key}')" title="ステータス変更">🔄</button>`:''}
+        <button onclick="deleteTask('${t._key}')" title="削除">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function statusTag(s) { return s==='done'?'tag-done':s==='doing'?'tag-doing':'tag-todo'; }
+function statusLabel(s) { return s==='done'?'完了':s==='doing'?'進行中':'未着手'; }
+
+// ---- BUDGET ----
+function addBudget() {
+  const desc = document.getElementById('budget-desc').value.trim();
+  const amount = parseInt(document.getElementById('budget-amount').value);
+  if(!desc || !amount) return;
+  fbAdd('budgets', {
+    type: document.getElementById('budget-type').value,
+    desc,
+    amount,
+    date: document.getElementById('budget-date').value,
+    createdAt: Date.now()
+  });
+  document.getElementById('budget-desc').value = '';
+  document.getElementById('budget-amount').value = '';
+}
+
+function deleteBudget(key) {
+  fbDelete('budgets', key);
+}
+
+function renderBudget() {
+  const income = budgets.filter(b=>b.type==='income').reduce((s,b)=>s+b.amount,0);
+  const expense = budgets.filter(b=>b.type==='expense').reduce((s,b)=>s+b.amount,0);
+  document.getElementById('total-income').textContent = '¥'+income.toLocaleString();
+  document.getElementById('total-expense').textContent = '¥'+expense.toLocaleString();
+  const bal = income - expense;
+  const balEl = document.getElementById('total-balance');
+  balEl.textContent = (bal<0?'-':'')+'¥'+Math.abs(bal).toLocaleString();
+  balEl.style.color = bal < 0 ? 'var(--accent1)' : 'var(--accent2)';
+
+  const list = document.getElementById('budget-list');
+  const sorted = [...budgets].sort((a,b) => b.date.localeCompare(a.date));
+  if(!sorted.length) { list.innerHTML = '<div class="empty">収支データがありません。</div>'; return; }
+  list.innerHTML = sorted.map(b => `
+    <div class="budget-item">
+      <div class="dot ${b.type==='income'?'dot-income':'dot-expense'}"></div>
+      <div class="desc">${esc(b.desc)}</div>
+      <div class="bdate">${b.date}</div>
+      <div class="bamount ${b.type==='income'?'income-amount':'expense-amount'}">
+        ${b.type==='income'?'+':'-'}¥${b.amount.toLocaleString()}
+      </div>
+      <button onclick="deleteBudget('${b._key}')" style="background:none;border:none;cursor:pointer;color:#ccc" title="削除">✕</button>
+    </div>
+  `).join('');
+}
+
+// ---- CALENDAR ----
+function addEvent() {
+  const title = document.getElementById('event-title').value.trim();
+  const date = document.getElementById('event-date').value;
+  if(!title || !date) return;
+  fbAdd('events', {
+    title,
+    date,
+    timeStart: document.getElementById('event-time-start').value,
+    timeEnd: document.getElementById('event-time-end').value,
+    who: document.getElementById('event-who').value,
+    createdAt: Date.now()
+  });
+  document.getElementById('event-title').value = '';
+  document.getElementById('event-time-start').value = '';
+  document.getElementById('event-time-end').value = '';
+}
+
+function deleteEvent(key) {
+  fbDelete('events', key);
+}
+
+function prevMonth() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+function nextMonth() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+
+function renderCalendar() {
+  document.getElementById('cal-month-label').textContent = `${calYear}年${calMonth+1}月`;
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const days = new Date(calYear, calMonth+1, 0).getDate();
+  const todayStr = now.toISOString().slice(0,10);
+  const monthStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}`;
+
+  let html = '';
+  for(let i=0;i<first;i++) html += '<div class="cal-day other-month"></div>';
+  for(let d=1;d<=days;d++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const hasEv = events.some(e => e.date === ds);
+    const hasTask = tasks.some(t => t.due === ds && t.status !== 'done');
+    const isToday = ds === todayStr;
+    html += `<div class="cal-day ${isToday?'today':''}" onclick="filterCalDay('${ds}')">
+      ${d}
+      <div class="dots">
+        ${hasEv ? '<div class="event-dot"></div>' : ''}
+        ${hasTask ? '<div class="task-dot"></div>' : ''}
+      </div>
+    </div>`;
+  }
+  document.getElementById('cal-days').innerHTML = html;
+
+  // Merge events and task deadlines for the month
+  const whoColors = { family: '#5AC87A', tomaro: '#E8785A', rika: '#5A8FE8', sumiko: '#A87AC8', airi: '#F0B429', uruha: '#E8A0BF', noa: '#7BC8C8' };
+  const whoLabels = { family: '家族', tomaro: '伴麿', rika: '理香', sumiko: 'すみこ', airi: 'あいり', uruha: 'うるは', noa: 'のあ' };
+
+  const monthEvents = events.filter(e => e.date.startsWith(monthStr));
+  const monthTasks = tasks.filter(t => t.due && t.due.startsWith(monthStr) && t.status !== 'done');
+
+  // Combine into unified list
+  const combined = [
+    ...monthEvents.map(e => ({ type: 'event', date: e.date, timeStart: e.timeStart||'', timeEnd: e.timeEnd||'', title: e.title, who: e.who, _key: e._key })),
+    ...monthTasks.map(t => ({ type: 'task', date: t.due, timeStart: t.timeStart||'', timeEnd: t.timeEnd||'', title: t.title, owner: t.owner, id: t.id, status: t.status }))
+  ].sort((a, b) => {
+    const aKey = a.date + (a.timeStart || '99:99');
+    const bKey = b.date + (b.timeStart || '99:99');
+    return aKey.localeCompare(bKey);
+  });
+
+  const eList = document.getElementById('events-list');
+  if(!combined.length) { eList.innerHTML = '<div class="empty">この月の予定・タスクはありません。</div>'; return; }
+
+  eList.innerHTML = combined.map(item => {
+    if(item.type === 'event') {
+      const timeStr = item.timeStart ? ` ⏰ ${item.timeStart}${item.timeEnd ? '〜' + item.timeEnd : ''}` : '';
+      return `
+        <div class="event-item">
+          <div class="event-color" style="background:${whoColors[item.who]||'#ccc'}"></div>
+          <div class="event-info">
+            <div class="event-title">${esc(item.title)}</div>
+            <div class="event-meta">${item.date}${timeStr} ・ ${whoLabels[item.who]||item.who}</div>
+          </div>
+          <button class="event-del" onclick="deleteEvent('${item._key}')">✕</button>
+        </div>`;
+    } else {
+      const ownerLbl = ownerLabel(item.owner);
+      const timeStr = item.timeStart ? ` ⏰ ${item.timeStart}${item.timeEnd ? '〜' + item.timeEnd : ''}` : '';
+      return `
+        <div class="event-item task-linked">
+          <div class="event-color" style="background:var(--accent1)"></div>
+          <div class="event-info">
+            <div class="event-title">📝 ${esc(item.title)}</div>
+            <div class="event-meta">${item.date}${timeStr} ・ ${ownerLbl} ・ <span class="tag-deadline">タスク締切</span></div>
+          </div>
+          <button class="goto-cal" onclick="goToTaskTab()" style="margin-right:8px">タスクへ</button>
+        </div>`;
+    }
+  }).join('');
+}
+
+function filterCalDay(ds) {
+  const dayItems = [
+    ...events.filter(e => e.date === ds),
+    ...tasks.filter(t => t.due === ds && t.status !== 'done')
+  ];
+  if(dayItems.length) document.getElementById('events-list').scrollIntoView({behavior:'smooth'});
+}
+
+function goToCalendar(dateStr) {
+  const d = new Date(dateStr);
+  calYear = d.getFullYear();
+  calMonth = d.getMonth();
+  renderCalendar();
+  // Switch to calendar tab
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('calendar').classList.add('active');
+  document.querySelectorAll('nav button')[2].classList.add('active');
+  setTimeout(() => document.getElementById('events-list').scrollIntoView({behavior:'smooth'}), 100);
+}
+
+function goToTaskTab() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('task').classList.add('active');
+  document.querySelectorAll('nav button')[0].classList.add('active');
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ---- RECEIPT SCAN (Tesseract.js OCR) ----
+async function scanReceipt(input) {
+  const file = input.files[0];
+  if (!file) return;
+  input.value = '';
+
+  const statusEl = document.getElementById('scan-status');
+  const statusText = document.getElementById('scan-status-text');
+  const previewEl = document.getElementById('scan-preview');
+  const previewImg = document.getElementById('scan-img');
+
+  // Show preview
+  previewImg.src = URL.createObjectURL(file);
+  previewEl.style.display = 'block';
+
+  // Show status
+  statusEl.style.display = 'block';
+  statusText.textContent = '🔍 文字を読み取り中...（少々お待ちください）';
+
+  try {
+    const { data: { text } } = await Tesseract.recognize(file, 'jpn+eng', {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          statusText.textContent = `🔍 解析中... ${Math.round(m.progress * 100)}%`;
+        }
+      }
+    });
+
+    // 金額抽出：合計 > 小計 > ¥付き数値 > 最大の数値
+    let amount = '';
+    const patterns = [
+      /合計[^\d]*(\d[\d,]+)/,
+      /小計[^\d]*(\d[\d,]+)/,
+      /お買上[^\d]*(\d[\d,]+)/,
+      /[¥￥]\s*(\d[\d,]+)/,
+    ];
+    for (const pat of patterns) {
+      const m = text.match(pat);
+      if (m) { amount = m[1].replace(/,/g,''); break; }
+    }
+    if (!amount) {
+      const nums = [...text.matchAll(/(\d[\d,]{2,})/g)]
+        .map(m => parseInt(m[1].replace(/,/g,'')))
+        .filter(n => n >= 100 && n < 1000000);
+      if (nums.length) amount = String(Math.max(...nums));
+    }
+
+    // 日付抽出
+    let date = new Date().toISOString().slice(0,10);
+    const dm = text.match(/(\d{4})[\/\-年](\d{1,2})[\/\-月](\d{1,2})/);
+    if (dm) {
+      date = `${dm[1]}-${dm[2].padStart(2,'0')}-${dm[3].padStart(2,'0')}`;
+    } else {
+      const rm = text.match(/R(\d+)[\.\/](\d{1,2})[\.\/](\d{1,2})/);
+      if (rm) date = `${2018+parseInt(rm[1])}-${rm[2].padStart(2,'0')}-${rm[3].padStart(2,'0')}`;
+    }
+
+    // 店名抽出（最初の意味のある行）
+    const lines = text.split('\n').map(l=>l.trim()).filter(l=>l.length>1 && !/^[\d\s¥￥,\.]+$/.test(l));
+    const desc = lines[0] ? lines[0].substring(0,20) : '';
+
+    // フォームに反映
+    document.getElementById('budget-type').value = 'expense';
+    if (desc)   document.getElementById('budget-desc').value = desc;
+    if (amount) document.getElementById('budget-amount').value = amount;
+    document.getElementById('budget-date').value = date;
+
+    statusText.textContent = amount
+      ? `✅ 完了！金額: ¥${parseInt(amount).toLocaleString()} ／ 内容を確認して「追加」してください。`
+      : '⚠️ 金額を取得できませんでした。手動で入力してください。';
+
+  } catch(err) {
+    statusText.textContent = '❌ 読み取り失敗。手動で入力してください。';
+  }
+}
+</script>
+</body>
+</html>
