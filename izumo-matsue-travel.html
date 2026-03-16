@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出雲・松江 1泊2日 ご縁結びの旅</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho+B1:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --vermilion: #C0392B;
+    --deep-red: #8B1A1A;
+    --gold: #D4A017;
+    --dark-gold: #A07810;
+    --ink: #1A1A2E;
+    --cream: #FDF6E3;
+    --light-cream: #FFFDF7;
+    --mist: #E8E0D0;
+    --sage: #5C7A5C;
+    --sky: #4A7FA5;
+    --day1: #8B1A1A;
+    --day2: #1A3A5C;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--ink);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ========== COVER ========== */
+  .cover {
+    background: var(--ink);
+    min-height: 420px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(135deg, rgba(192,57,43,0.25) 0%, transparent 50%),
+      linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(26,26,46,0.85) 100%);
+    z-index: 1;
+  }
+
+  .cover-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://lh3.googleusercontent.com/place-photos/AL8-SNHCWyyQemMKObcHkr4gfSb4jBE_lv35dlABd-pdHU_85ePMbGAgIsfe1qsswpS6Thhv69wMSSRiKfjRGzhunGYEoSAeTP8dZzAM_1UrmyKlhvefquU4hC5TvaPoGTLmJSyvND2BRKKMErFY=s4800-w800-h600');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.45;
+  }
+
+  .cover-content { position: relative; z-index: 2; text-align: center; }
+
+  .cover-badge {
+    display: inline-block;
+    border: 2px solid var(--gold);
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 4px;
+    padding: 4px 16px;
+    margin-bottom: 18px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+  }
+
+  .cover-title {
+    font-family: 'Shippori Mincho B1', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+    margin-bottom: 8px;
+  }
+
+  .cover-subtitle {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 2px;
+    margin-bottom: 24px;
+  }
+
+  .cover-tags {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .cover-tag {
+    background: rgba(192,57,43,0.85);
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .torii-deco {
+    font-size: 48px;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+  }
+
+  /* ========== ROUTE OVERVIEW ========== */
+  .route-bar {
+    background: var(--vermilion);
+    color: #fff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .route-steps {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .route-step {
+    background: rgba(255,255,255,0.2);
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .route-arrow { opacity: 0.7; font-size: 10px; }
+
+  /* ========== SECTION HEADER ========== */
+  .day-header {
+    padding: 0 24px;
+    margin: 32px 0 0;
+  }
+
+  .day-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .day-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    color: #fff;
+    font-family: 'Noto Serif JP', serif;
+    flex-shrink: 0;
+  }
+
+  .day1 .day-num { background: var(--day1); }
+  .day2 .day-num { background: var(--day2); }
+
+  .day-title-wrap {}
+  .day-en { font-size: 11px; letter-spacing: 3px; opacity: 0.5; font-weight: 700; text-transform: uppercase; }
+  .day-title-text {
+    font-family: 'Shippori Mincho B1', serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .day1 .day-title-text { color: var(--day1); }
+  .day2 .day-title-text { color: var(--day2); }
+
+  .day-theme {
+    margin: 10px 24px 0;
+    padding: 8px 16px;
+    border-left: 4px solid;
+    font-size: 13px;
+    color: #555;
+    font-style: italic;
+    font-family: 'Noto Serif JP', serif;
+    background: rgba(0,0,0,0.03);
+  }
+  .day1 .day-theme { border-color: var(--day1); }
+  .day2 .day-theme { border-color: var(--day2); }
+
+  /* ========== SCHEDULE TABLE ========== */
+  .schedule-wrap {
+    margin: 20px 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+  }
+
+  .schedule-table thead tr {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    text-align: left;
+  }
+
+  .day1-header thead tr { background: var(--day1); }
+  .day2-header thead tr { background: var(--day2); }
+
+  .schedule-table thead th {
+    padding: 10px 16px;
+  }
+
+  .schedule-table tbody tr {
+    border-bottom: 1px solid var(--mist);
+    transition: background 0.2s;
+  }
+
+  .schedule-table tbody tr:last-child { border-bottom: none; }
+  .schedule-table tbody tr:hover { background: #FFF9F0; }
+
+  .time-cell {
+    padding: 14px 16px;
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+    color: var(--deep-red);
+    font-family: 'Noto Serif JP', serif;
+    width: 80px;
+  }
+
+  .day2 .time-cell { color: var(--sky); }
+
+  .spot-cell {
+    padding: 14px 16px 14px 0;
+    font-weight: 700;
+    font-size: 14px;
+    width: 160px;
+  }
+
+  .spot-tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-right: 4px;
+    vertical-align: middle;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-shrine { background: #FDE8E8; color: var(--deep-red); }
+  .tag-food { background: #E8F5E9; color: var(--sage); }
+  .tag-scenic { background: #E3F0FF; color: var(--sky); }
+  .tag-move { background: #F5F5F5; color: #777; }
+  .tag-culture { background: #FFF3CD; color: var(--dark-gold); }
+
+  .detail-cell {
+    padding: 14px 16px 14px 0;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  .price-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 3px;
+    font-weight: 700;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+
+  /* ========== SPOT CARDS ========== */
+  .spot-cards {
+    margin: 0 24px 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .spot-card {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 14px rgba(0,0,0,0.12);
+    background: #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .spot-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  }
+
+  .spot-card-img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .spot-card-body {
+    padding: 10px 12px 12px;
+  }
+
+  .spot-card-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    margin-bottom: 3px;
+  }
+
+  .spot-card-desc {
+    font-size: 11px;
+    color: #777;
+    line-height: 1.5;
+  }
+
+  .rating-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 5px;
+  }
+
+  .star { color: var(--gold); font-size: 11px; }
+  .rating-num { font-size: 11px; font-weight: 700; color: var(--ink); }
+
+  /* ========== TIPS SECTION ========== */
+  .tips-section {
+    margin: 8px 24px 32px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    border-top: 4px solid var(--gold);
+  }
+
+  .tips-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .tips-title {
+    font-family: 'Shippori Mincho B1', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .tip-item {
+    background: var(--light-cream);
+    border-radius: 8px;
+    padding: 14px;
+    border: 1px solid var(--mist);
+  }
+
+  .tip-icon { font-size: 22px; margin-bottom: 6px; }
+
+  .tip-label {
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--vermilion);
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .tip-text {
+    font-size: 12px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* ========== DIVIDER ========== */
+  .day-divider {
+    margin: 24px;
+    border: none;
+    border-top: 2px solid var(--mist);
+    position: relative;
+  }
+
+  .day-divider::after {
+    content: '⛩';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--cream);
+    padding: 0 12px;
+    font-size: 18px;
+  }
+
+  /* ========== FOOTER ========== */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  /* ========== MAP LINK ========== */
+  .map-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--sky);
+    text-decoration: none;
+    background: #EBF4FF;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #B8D8F0;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+  .map-link:hover {
+    background: var(--sky);
+    color: #fff;
+    border-color: var(--sky);
+  }
+  .map-link::before { content: '📍'; font-size: 10px; }
+
+  .spot-card-link { display: block; text-decoration: none; color: inherit; }
+
+  @media (max-width: 640px) {
+    .cover-title { font-size: 26px; }
+    .spot-cards { grid-template-columns: repeat(2, 1fr); }
+    .tips-grid { grid-template-columns: 1fr 1fr; }
+    .schedule-table { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-content">
+    <div class="torii-deco">⛩️</div>
+    <div class="cover-badge">TRAVEL GUIDE</div>
+    <h1 class="cover-title">出雲・松江<br>ご縁結びの旅</h1>
+    <p class="cover-subtitle">明石発 ／ 1泊2日 ／ 神話と歴史を巡る大人旅</p>
+    <div class="cover-tags">
+      <span class="cover-tag">🚗 ドライブ旅</span>
+      <span class="cover-tag">⛩️ 出雲大社</span>
+      <span class="cover-tag">🏯 国宝松江城</span>
+      <span class="cover-tag">🌅 絶景スポット</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROUTE BAR ===== -->
+<div class="route-bar">
+  <span>🗺️ ルート：</span>
+  <div class="route-steps">
+    <span class="route-step">明石出発</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">山陽道</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">中国道</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">米子道</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">稲佐の浜</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">出雲大社</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">日御碕</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">【泊】</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">松江城</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">宍道湖</span>
+    <span class="route-arrow">▶</span>
+    <span class="route-step">明石帰着</span>
+  </div>
+</div>
+
+<!-- ===== DAY 1 ===== -->
+<div class="day1">
+  <div class="day-header">
+    <div class="day-label">
+      <div class="day-num">1</div>
+      <div class="day-title-wrap">
+        <div class="day-en">DAY ONE</div>
+        <div class="day-title-text">出雲大社 深度参拝と絶景の岬</div>
+      </div>
+    </div>
+    <div class="day-theme">テーマ：神々をお迎えする道を辿り、正式な作法で参拝する</div>
+  </div>
+
+  <!-- Schedule Table Day1 -->
+  <div class="schedule-wrap">
+    <table class="schedule-table day1-header">
+      <thead>
+        <tr>
+          <th>時間</th>
+          <th>行程</th>
+          <th>詳細・料金目安</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="time-cell">08:00</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-move">出発</span><br>
+            明石出発
+          </td>
+          <td class="detail-cell">山陽道→中国道→米子道経由。高速料金目安 約4,000円。道の駅で休憩を挟みながら約4時間のドライブ。</td>
+        </tr>
+        <tr>
+          <td class="time-cell">12:00</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-shrine">最重要</span><br>
+            稲佐の浜<br>
+            <a class="map-link" href="https://maps.google.com/?cid=7441859954497664921" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">
+            <strong>⚠️ まず最初にここで「お砂」を取得！</strong><br>
+            ジップロック＋スプーン持参。弁天島の鳥居が美しい神聖な浜辺。出雲大社参拝前に必ず立ち寄ること。
+          </td>
+        </tr>
+        <tr>
+          <td class="time-cell">12:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-food">グルメ</span><br>
+            ランチ：出雲そば<br>
+            <a class="map-link" href="https://maps.google.com/maps/search/出雲そば+出雲大社+門前" target="_blank">周辺を検索</a>
+          </td>
+          <td class="detail-cell">「田中屋」や「かねや」など出雲大社門前の名店で割子そばを。目安 約1,000〜1,500円。</td>
+        </tr>
+        <tr>
+          <td class="time-cell">13:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-shrine">参拝</span><br>
+            出雲大社<br>
+            <a class="map-link" href="https://maps.google.com/?cid=8100404179576194287" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">
+            正式ルートでお砂を所定の場所に置き交換。<span class="price-badge">参拝無料</span><br>
+            <strong>作法：２礼 ４拍手 １礼</strong>（一般の神社と異なります！）<br>
+            ご本殿→神楽殿の大しめ縄まで約2時間。
+          </td>
+        </tr>
+        <tr>
+          <td class="time-cell">15:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-move">移動</span><br>
+            日御碕へ移動
+          </td>
+          <td class="detail-cell">海岸線の絶景ドライブ約20分。日本海の荒波と断崖絶壁が続く絶景ルート。</td>
+        </tr>
+        <tr>
+          <td class="time-cell">16:00</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-scenic">絶景</span><br>
+            日御碕灯台・神社<br>
+            <a class="map-link" href="https://maps.google.com/?cid=18395148165904945342" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">
+            日本一の高さを誇る石造灯台（高さ約43.65m）と朱塗りの神社。<span class="price-badge">灯台 300円</span><br>
+            ⚠️ 階段が急なので歩きやすい靴必須！断崖の展望台からの眺めは絶景。
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Spot Cards Day1 -->
+  <div class="spot-cards">
+    <a class="spot-card spot-card-link" href="https://maps.google.com/?cid=7441859954497664921" target="_blank">
+      <img class="spot-card-img"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNGIkMacvWT6ktb-ZHzY2iY6Xe5aezz-0KPJWMQAoezDniTXWFSYfqFGOHZ4NJj_r_ybo4Mo9FhmSvh17UctatA7900KrRXjcweLHx4klu0pvYWKVtX54_n9CzbLRiGFrZAVzY2QOI0eB0ox=s800-w400-h300"
+        alt="稲佐の浜">
+      <div class="spot-card-body">
+        <div class="spot-card-name">⛱️ 稲佐の浜</div>
+        <div class="spot-card-desc">神々が降り立つ浜辺。弁天島と真っ赤な鳥居が神秘的。</div>
+        <div class="rating-row"><span class="star">★★★★★</span><span class="rating-num">4.5</span></div>
+      </div>
+    </a>
+    <a class="spot-card spot-card-link" href="https://maps.google.com/?cid=8100404179576194287" target="_blank">
+      <img class="spot-card-img"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNHCWyyQemMKObcHkr4gfSb4jBE_lv35dlABd-pdHU_85ePMbGAgIsfe1qsswpS6Thhv69wMSSRiKfjRGzhunGYEoSAeTP8dZzAM_1UrmyKlhvefquU4hC5TvaPoGTLmJSyvND2BRKKMErFY=s800-w400-h300"
+        alt="出雲大社">
+      <div class="spot-card-body">
+        <div class="spot-card-name">⛩️ 出雲大社</div>
+        <div class="spot-card-desc">縁結びの神様・大国主命をお祀りする日本最古の神社。</div>
+        <div class="rating-row"><span class="star">★★★★★</span><span class="rating-num">4.6</span></div>
+      </div>
+    </a>
+    <a class="spot-card spot-card-link" href="https://maps.google.com/?cid=18395148165904945342" target="_blank">
+      <img class="spot-card-img"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNFv8TsRGjgOzRok5elLFC6w4IRiAewtERbxifdLBVkaaffbNVA4LVlVV7GZHNIkW7rw0qB3b6FeMi0qrMLSBCpwIcz3ybyvYqwbXRcj3H9pOZqjAwoMDW5qi92udFrnkg9K4rV5fKTM_BD6uys=s800-w400-h300"
+        alt="日御碕灯台">
+      <div class="spot-card-body">
+        <div class="spot-card-name">🔦 日御碕灯台</div>
+        <div class="spot-card-desc">日本一の高さを誇る石造灯台。断崖からの日本海が圧巻。</div>
+        <div class="rating-row"><span class="star">★★★★</span><span class="rating-num">4.4</span></div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ===== DIVIDER ===== -->
+<hr class="day-divider">
+
+<!-- ===== DAY 2 ===== -->
+<div class="day2">
+  <div class="day-header">
+    <div class="day-label">
+      <div class="day-num">2</div>
+      <div class="day-title-wrap">
+        <div class="day-en">DAY TWO</div>
+        <div class="day-title-text">水の都・松江の文化体験</div>
+      </div>
+    </div>
+    <div class="day-theme">テーマ：国宝のお城と、日本三大菓子処の茶の湯を楽しむ</div>
+  </div>
+
+  <!-- Schedule Table Day2 -->
+  <div class="schedule-wrap">
+    <table class="schedule-table day2-header">
+      <thead>
+        <tr>
+          <th>時間</th>
+          <th>行程</th>
+          <th>詳細・料金目安</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">午前</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-move">移動</span><br>
+            松江城周辺へ到着
+          </td>
+          <td class="detail-cell">前泊地から松江城方面へ移動。城周辺の有料駐車場を利用（約700円/日）。</td>
+        </tr>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">9:00</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-culture">国宝</span><br>
+            国宝 松江城<br>
+            <a class="map-link" href="https://maps.google.com/?cid=1445704141536688957" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">
+            現存12天守の一つ、国宝指定のお城。天守閣最上階から松江市内・宍道湖の眺望。<span class="price-badge">680円</span><br>
+            ⚠️ 靴を脱いで入場。2枚履きが寒い時期におすすめ。
+          </td>
+        </tr>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">10:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-scenic">体験</span><br>
+            堀川遊覧船<br>
+            <a class="map-link" href="https://maps.google.com/?cid=678883385579530422" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">
+            城下町の堀を小舟でゆっくり巡る約50分の遊覧。<span class="price-badge">1,600円</span><br>
+            低い橋をくぐるとき船屋根が沈む演出が楽しい！亀や鳥も観察できる。
+          </td>
+        </tr>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">12:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-food">グルメ</span><br>
+            ランチ：松江グルメ<br>
+            <a class="map-link" href="https://maps.google.com/maps/search/カツライス+松江" target="_blank">周辺を検索</a>
+          </td>
+          <td class="detail-cell">カツライスや宍道湖の七珍（しじみ・鯉・鮒・うなぎ・もろげえび・あまさぎ・すずき）が名物。</td>
+        </tr>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">14:00</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-culture">茶道</span><br>
+            明々庵（お抹茶）<br>
+            <a class="map-link" href="https://maps.google.com/?cid=2882702959956106857" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">
+            庭園を眺めながらお抹茶と和菓子で一服。日本三大菓子処・松江の上質な茶の湯体験。<span class="price-badge">約820円〜</span>
+          </td>
+        </tr>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">16:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-scenic">絶景</span><br>
+            宍道湖の夕日<br>
+            <a class="map-link" href="https://maps.google.com/?cid=7178319254436429595" target="_blank">Googleマップ</a>
+          </td>
+          <td class="detail-cell">日本の夕日百選にも輝く絶景タイム。島根県立美術館前の湖岸が特に美しい夕景スポット。帰路前の感動の締めくくりに。</td>
+        </tr>
+        <tr>
+          <td class="time-cell" style="color:var(--sky)">17:30</td>
+          <td class="spot-cell">
+            <span class="spot-tag tag-move">帰路</span><br>
+            松江出発
+          </td>
+          <td class="detail-cell">明石へ向けて出発。約3時間強（渋滞により変動）。松江道→中国道経由。</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Spot Cards Day2 -->
+  <div class="spot-cards">
+    <a class="spot-card spot-card-link" href="https://maps.google.com/?cid=1445704141536688957" target="_blank">
+      <img class="spot-card-img"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNG_OKkOFQB4CJYQwS2QnjlXl_guSnHHZacbvC-V2bKo7wvuJDq4iG3EWDpRwrLfnf7jx4WzDw3VZNWqSts5-UsNAUD4imywPQa435AB4T6xc5GRI30n0qlpReYXuvFbBamlchghVL9RcKFg=s800-w400-h300"
+        alt="松江城">
+      <div class="spot-card-body">
+        <div class="spot-card-name">🏯 国宝 松江城</div>
+        <div class="spot-card-desc">黒塗りの外観が美しい国宝天守。現存12天守のひとつ。</div>
+        <div class="rating-row"><span class="star">★★★★</span><span class="rating-num">4.4</span></div>
+      </div>
+    </a>
+    <a class="spot-card spot-card-link" href="https://maps.google.com/?cid=678883385579530422" target="_blank">
+      <img class="spot-card-img"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNGukqJcqzSduxvBsKUGh41WmONiqSYJEP-Lp4DmLZJmV3bpWTm92Y1irDzLA-SlkmxWIqKQUnNLxhVy8A8WjMgOqDWcdgDhFH0Clsm4SXRaW6bTjACR8Lyy1QzR54sLZMfBSmcKAM9dpVI40A=s800-w400-h300"
+        alt="堀川遊覧船">
+      <div class="spot-card-body">
+        <div class="spot-card-name">⛵ 堀川遊覧船</div>
+        <div class="spot-card-desc">城の堀を小舟で巡る約50分の旅。四季の風景を水面から楽しむ。</div>
+        <div class="rating-row"><span class="star">★★★★</span><span class="rating-num">4.3</span></div>
+      </div>
+    </a>
+    <a class="spot-card spot-card-link" href="https://maps.google.com/?cid=7178319254436429595" target="_blank">
+      <img class="spot-card-img"
+        src="https://lh3.googleusercontent.com/place-photos/AL8-SNGr6A_JvZvMP-Y9UxOfiyEW0oJKIeSGmipz18SEEacZ4dQF78yL1s8JgibvPiSOVBsmP0vCAl7XaC79zFqMlplO-g8nd60Jg8CfloDoxT35ZLz2yb1jLItBSeqUSjFWVe-lPCljc9F2iqBI4g=s800-w400-h300"
+        alt="宍道湖">
+      <div class="spot-card-body">
+        <div class="spot-card-name">🌅 宍道湖の夕日</div>
+        <div class="spot-card-desc">日本の夕日百選。橙と紫に染まる湖面が心に残る絶景。</div>
+        <div class="rating-row"><span class="star">★★★★</span><span class="rating-num">4.4</span></div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ===== TIPS ===== -->
+<div class="tips-section">
+  <div class="tips-header">
+    <span style="font-size:22px">💡</span>
+    <h2 class="tips-title">旅のヒント・持ち物チェック</h2>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-item">
+      <div class="tip-icon">🏖️</div>
+      <div class="tip-label">お砂取りセット【必須】</div>
+      <div class="tip-text">ジップロック＋スプーンを必ず持参。稲佐の浜で取得し、出雲大社所定の場所で交換します。</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🙏</div>
+      <div class="tip-label">出雲大社の参拝作法</div>
+      <div class="tip-text">一般神社と異なり<strong>「２礼 ４拍手 １礼」</strong>。二礼二拍手一礼ではないので注意！</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">👟</div>
+      <div class="tip-label">服装・靴</div>
+      <div class="tip-text">日御碕灯台の階段は急勾配。松江城も靴を脱いで入場。歩きやすいスニーカーが必須。</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">⏱️</div>
+      <div class="tip-label">時間のゆとりを</div>
+      <div class="tip-text">出雲大社は広大。混雑時はさらに時間がかかるので、日御碕は余裕を持ったスケジュールで。</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🚗</div>
+      <div class="tip-label">移動距離目安</div>
+      <div class="tip-text">明石→出雲：約280km（約4時間）。出雲大社→日御碕：約20分。出雲→松江：約45分。</div>
+    </div>
+    <div class="tip-item">
+      <div class="tip-icon">🍜</div>
+      <div class="tip-label">おすすめグルメ</div>
+      <div class="tip-text">出雲そば「田中屋・かねや」、松江は宍道湖七珍・カツライス・松江和菓子（風流堂など）。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  出雲・松江 1泊2日 ご縁結びの旅しおり　／　明石発
+</div>
+
+</body>
+</html>

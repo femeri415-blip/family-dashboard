@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出雲大社 完全参拝ガイド</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --vermilion: #B5312A;
+  --deep-red: #7A1818;
+  --gold: #C8960C;
+  --dark-gold: #8A6800;
+  --ink: #1C1A2E;
+  --cream: #FBF5E6;
+  --light-cream: #FFFDF7;
+  --mist: #E5DDD0;
+  --sage: #4A6741;
+  --sky: #3A6A90;
+  --warning: #D35400;
+  --ok: #27643F;
+  --ng: #8B0000;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--cream); font-family:'Noto Sans JP',sans-serif; color:var(--ink); max-width:960px; margin:0 auto; }
+
+/* ── COVER ── */
+.cover {
+  min-height:380px; position:relative; overflow:hidden;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:40px 20px; background:#0e0b18;
+}
+.cover-bg {
+  position:absolute; inset:0;
+  background-image:url('https://lh3.googleusercontent.com/place-photos/AL8-SNEvQWGbtVjN95TBJIims4j7Yh9QwbSKESnED4Jb6O4SMGGnf-B0ElNDpHBTKEXyOBL871RKYRVLBls2JEyy9WNzwpzecXCMXzq_fu7420KwY2A04CvKhJt2af3wcOYrDJcy8JLC2ENCm8Uf_xdDDckDog=s1200-w800-h600');
+  background-size:cover; background-position:center top; opacity:0.38;
+}
+.cover::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom, rgba(14,11,24,0.2) 0%, rgba(14,11,24,0.75) 100%);
+}
+.cover-inner { position:relative; z-index:2; text-align:center; }
+.cover-eyebrow {
+  display:inline-block; border:1.5px solid var(--gold); color:var(--gold);
+  font-size:10px; letter-spacing:5px; padding:3px 18px; margin-bottom:14px;
+  font-weight:700; text-transform:uppercase;
+}
+.cover-title {
+  font-family:'Shippori Mincho B1',serif; font-size:44px; font-weight:800;
+  color:#fff; line-height:1.25; text-shadow:0 3px 16px rgba(0,0,0,0.7);
+  margin-bottom:6px;
+}
+.cover-title span { color:var(--gold); }
+.cover-subtitle { font-size:13px; color:rgba(255,255,255,0.65); letter-spacing:2px; margin-bottom:22px; }
+.cover-chips { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.chip { background:rgba(181,49,42,0.85); color:#fff; font-size:11px; font-weight:700; padding:4px 13px; border-radius:20px; letter-spacing:0.5px; }
+
+/* ── SECTION HEADER ── */
+.sec-head {
+  display:flex; align-items:center; gap:14px;
+  padding:28px 28px 0;
+}
+.sec-icon { font-size:28px; flex-shrink:0; }
+.sec-title { font-family:'Shippori Mincho B1',serif; font-size:22px; font-weight:700; color:var(--deep-red); }
+.sec-sub { font-size:12px; color:#888; letter-spacing:2px; }
+.sec-line { height:3px; background:linear-gradient(to right, var(--vermilion), transparent); margin:10px 28px 0; border-radius:2px; }
+
+/* ── PARKING TABLE ── */
+.parking-section { padding:18px 28px 0; }
+.parking-intro { font-size:13px; color:#555; margin-bottom:14px; line-height:1.7; }
+.parking-table { width:100%; border-collapse:collapse; background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 3px 16px rgba(0,0,0,0.09); }
+.parking-table thead tr { background:var(--deep-red); color:#fff; }
+.parking-table th { padding:10px 14px; font-size:11px; letter-spacing:2px; font-weight:700; text-align:left; }
+.parking-table td { padding:12px 14px; font-size:13px; border-bottom:1px solid var(--mist); vertical-align:top; }
+.parking-table tr:last-child td { border-bottom:none; }
+.parking-table tr:hover td { background:#FFF7EE; }
+.free-badge { display:inline-block; background:#E8F5E4; color:var(--ok); font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; border:1px solid #b2d9aa; }
+.paid-badge { display:inline-block; background:#FFF3CD; color:var(--dark-gold); font-size:11px; font-weight:700; padding:2px 8px; border-radius:4px; border:1px solid #e0c060; }
+.rec-badge { display:inline-block; background:var(--vermilion); color:#fff; font-size:10px; font-weight:700; padding:2px 8px; border-radius:4px; margin-left:4px; }
+.parking-table .map-btn {
+  display:inline-flex; align-items:center; gap:3px; margin-top:4px;
+  font-size:11px; font-weight:700; color:var(--sky); text-decoration:none;
+  background:#EBF4FF; padding:2px 8px; border-radius:4px;
+  border:1px solid #B8D8F0;
+}
+
+/* ── ROUTE FLOW ── */
+.route-section { padding:18px 28px 0; }
+.flow-container { display:flex; flex-direction:column; gap:0; }
+.flow-item {
+  display:grid; grid-template-columns:60px 1fr;
+  align-items:stretch; background:#fff;
+  border-left:4px solid var(--vermilion);
+  margin-bottom:2px; border-radius:0 8px 8px 0;
+  box-shadow:0 1px 6px rgba(0,0,0,0.06);
+  overflow:hidden; transition:transform 0.15s;
+}
+.flow-item:hover { transform:translateX(3px); }
+.flow-item.special { border-left-color:var(--gold); }
+.flow-num {
+  background:var(--vermilion); color:#fff;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  font-family:'Shippori Mincho B1',serif; font-size:22px; font-weight:800;
+  padding:16px 0; flex-shrink:0;
+}
+.flow-item.special .flow-num { background:var(--gold); }
+.flow-num small { font-size:9px; letter-spacing:1px; font-weight:400; margin-top:2px; }
+.flow-body { padding:14px 16px; }
+.flow-name {
+  font-family:'Shippori Mincho B1',serif; font-size:17px; font-weight:700;
+  color:var(--ink); margin-bottom:4px;
+}
+.flow-desc { font-size:12px; color:#555; line-height:1.65; }
+.flow-tip {
+  display:inline-block; margin-top:6px; font-size:11px; font-weight:700;
+  color:var(--vermilion); background:#FFF0EE; padding:2px 10px; border-radius:4px;
+  border-left:3px solid var(--vermilion);
+}
+.flow-tip.gold { color:var(--dark-gold); background:#FFF9E6; border-color:var(--gold); }
+.flow-arrow {
+  text-align:center; color:var(--vermilion); font-size:20px; line-height:1;
+  padding:4px 0; opacity:0.5;
+}
+
+/* ── WORSHIP METHOD ── */
+.worship-section { padding:18px 28px 0; }
+.worship-cards { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:4px; }
+.worship-card {
+  background:#fff; border-radius:10px; padding:16px 12px;
+  text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.08);
+  border-top:4px solid var(--vermilion);
+}
+.worship-step-num {
+  width:36px; height:36px; background:var(--vermilion); color:#fff;
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:16px; font-weight:800; margin:0 auto 8px;
+  font-family:'Shippori Mincho B1',serif;
+}
+.worship-step-en { font-size:9px; letter-spacing:2px; color:#999; text-transform:uppercase; margin-bottom:2px; }
+.worship-step-ja { font-family:'Shippori Mincho B1',serif; font-size:16px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+.worship-step-desc { font-size:11px; color:#666; line-height:1.6; }
+.worship-note {
+  margin-top:14px; background:#FFF0EE; border:1px solid #F5C6C0; border-radius:8px;
+  padding:12px 16px; font-size:13px; color:var(--deep-red); font-weight:700;
+  display:flex; align-items:center; gap:8px;
+}
+.worship-compare {
+  margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:10px;
+}
+.compare-box {
+  background:#fff; border-radius:8px; padding:14px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.07); text-align:center;
+}
+.compare-box.ng { border-top:4px solid var(--ng); }
+.compare-box.ok { border-top:4px solid var(--ok); }
+.compare-label { font-size:10px; letter-spacing:2px; font-weight:700; margin-bottom:8px; }
+.compare-box.ng .compare-label { color:var(--ng); }
+.compare-box.ok .compare-label { color:var(--ok); }
+.compare-icon { font-size:32px; margin-bottom:4px; }
+.compare-text { font-family:'Shippori Mincho B1',serif; font-size:18px; font-weight:700; }
+.compare-sub { font-size:11px; color:#888; margin-top:4px; }
+
+/* ── NG RULES ── */
+.ng-section { padding:18px 28px 0; }
+.ng-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:4px; }
+.ng-item {
+  background:#fff; border-radius:10px; padding:16px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.07);
+  border-left:4px solid var(--ng);
+}
+.ng-icon { font-size:24px; margin-bottom:6px; }
+.ng-title { font-weight:700; font-size:13px; color:var(--ng); margin-bottom:4px; }
+.ng-desc { font-size:11px; color:#555; line-height:1.65; }
+
+/* ── SAND SECTION ── */
+.sand-section { padding:18px 28px 0; }
+.sand-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:4px; position:relative; }
+.sand-step {
+  background:#fff; text-align:center; padding:18px 12px;
+  position:relative;
+}
+.sand-step:not(:last-child)::after {
+  content:'▶'; position:absolute; right:-10px; top:50%; transform:translateY(-50%);
+  color:var(--gold); font-size:14px; z-index:2;
+}
+.sand-step:first-child { border-radius:10px 0 0 10px; }
+.sand-step:last-child { border-radius:0 10px 10px 0; }
+.sand-step-icon { font-size:28px; margin-bottom:8px; }
+.sand-step-num {
+  position:absolute; top:8px; left:8px;
+  width:20px; height:20px; background:var(--gold); color:#fff;
+  border-radius:50%; font-size:10px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+}
+.sand-step-title { font-weight:700; font-size:13px; color:var(--ink); margin-bottom:4px; font-family:'Shippori Mincho B1',serif; }
+.sand-step-desc { font-size:11px; color:#666; line-height:1.6; }
+.sand-box { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+.sand-info-box {
+  background:#fff; border-radius:8px; padding:14px 16px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.07);
+}
+.sand-info-title { font-size:11px; font-weight:700; color:var(--dark-gold); letter-spacing:1px; margin-bottom:6px; }
+.sand-info-text { font-size:12px; color:#555; line-height:1.7; }
+
+/* ── SPOT GALLERY ── */
+.spots-section { padding:18px 28px 0; }
+.spot-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:4px; }
+.spot-card {
+  border-radius:10px; overflow:hidden; background:#fff;
+  box-shadow:0 3px 14px rgba(0,0,0,0.1); transition:transform 0.2s;
+  text-decoration:none; color:inherit; display:block;
+}
+.spot-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+.spot-img { width:100%; height:120px; object-fit:cover; display:block; }
+.spot-body { padding:10px 12px 12px; }
+.spot-name { font-weight:700; font-size:13px; font-family:'Shippori Mincho B1',serif; margin-bottom:3px; }
+.spot-desc { font-size:11px; color:#777; line-height:1.5; }
+.spot-stars { color:var(--gold); font-size:11px; margin-top:4px; }
+
+/* ── HOURS TABLE ── */
+.info-section { padding:18px 28px 28px; }
+.info-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:4px; }
+.info-box { background:#fff; border-radius:10px; padding:18px; box-shadow:0 2px 10px rgba(0,0,0,0.07); }
+.info-box-title { font-family:'Shippori Mincho B1',serif; font-size:15px; font-weight:700; color:var(--deep-red); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.info-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--mist); font-size:13px; }
+.info-row:last-child { border-bottom:none; }
+.info-label { color:#777; font-size:12px; }
+.info-val { font-weight:700; color:var(--ink); }
+.checklist { list-style:none; }
+.checklist li { padding:6px 0; border-bottom:1px solid var(--mist); font-size:13px; display:flex; align-items:flex-start; gap:8px; }
+.checklist li:last-child { border-bottom:none; }
+.checklist li::before { content:'☐'; color:var(--vermilion); font-size:15px; flex-shrink:0; margin-top:1px; }
+
+/* ── FOOTER ── */
+.footer { background:var(--ink); color:rgba(255,255,255,0.45); text-align:center; padding:20px; font-size:11px; letter-spacing:2px; margin-top:8px; }
+.footer a { color:rgba(255,255,255,0.5); }
+
+@media(max-width:640px){
+  .cover-title{font-size:28px;}
+  .worship-cards{grid-template-columns:repeat(2,1fr);}
+  .ng-grid{grid-template-columns:repeat(2,1fr);}
+  .sand-steps{grid-template-columns:repeat(2,1fr);}
+  .sand-step:not(:last-child)::after{display:none;}
+  .spot-grid{grid-template-columns:repeat(2,1fr);}
+  .info-grid{grid-template-columns:1fr;}
+  .parking-section,.route-section,.worship-section,.ng-section,.sand-section,.spots-section,.info-section{padding-left:16px;padding-right:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== COVER ===== -->
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-inner">
+    <div class="cover-eyebrow">SPECIAL FEATURE</div>
+    <h1 class="cover-title">出雲大社<br><span>完全参拝ガイド</span></h1>
+    <p class="cover-subtitle">駐車場・参拝ルート・作法・やってはいけないこと</p>
+    <div class="cover-chips">
+      <span class="chip">🅿️ 無料駐車場あり</span>
+      <span class="chip">⛩️ 正式参拝の作法</span>
+      <span class="chip">🏖️ お砂交換の手順</span>
+      <span class="chip">⚠️ NGルール10選</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PARKING ===== -->
+<div class="sec-head">
+  <div class="sec-icon">🅿️</div>
+  <div>
+    <div class="sec-sub">PARKING GUIDE</div>
+    <div class="sec-title">近くの駐車場ガイド</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="parking-section">
+  <p class="parking-intro">出雲大社には公式の無料駐車場が3か所あります。休日は早めの到着が鉄則！<br>神在月（旧暦10月）や連休は満車になりやすいので、周辺の有料駐車場も把握しておきましょう。</p>
+  <table class="parking-table">
+    <thead>
+      <tr>
+        <th>駐車場名</th>
+        <th>料金</th>
+        <th>台数</th>
+        <th>特徴・アドバイス</th>
+        <th>マップ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>①大駐車場</strong><span class="rec-badge">おすすめ</span></td>
+        <td><span class="free-badge">無料</span></td>
+        <td>約385台</td>
+        <td>出雲大社公式。一番大きくトイレ完備。勢溜の大鳥居からやや南。早朝なら余裕あり。</td>
+        <td><a class="map-btn" href="https://maps.google.com/?cid=12582275774449604287" target="_blank">📍地図</a></td>
+      </tr>
+      <tr>
+        <td><strong>②駐車場</strong></td>
+        <td><span class="free-badge">無料</span></td>
+        <td>約360台</td>
+        <td>公式第2駐車場。境内西側。神楽殿エリアに近い。①が満車の際はこちら。</td>
+        <td><a class="map-btn" href="https://maps.google.com/maps/search/出雲大社+第2駐車場" target="_blank">📍地図</a></td>
+      </tr>
+      <tr>
+        <td><strong>③思いやり駐車場</strong></td>
+        <td><span class="free-badge">無料</span></td>
+        <td>約20台</td>
+        <td>車椅子・ベビーカー・障がい者専用。勢溜鳥居すぐ横。スロープで参道へ直結。</td>
+        <td><a class="map-btn" href="https://maps.google.com/?cid=678883385579530422" target="_blank">📍地図</a></td>
+      </tr>
+      <tr>
+        <td><strong>Apple Park 出雲大社前①</strong></td>
+        <td><span class="paid-badge">300円/60分<br>MAX 600円/日</span></td>
+        <td>—</td>
+        <td>勢溜の大鳥居前。参道入口から徒歩1分。混雑時の最終手段として便利。24時間営業。</td>
+        <td><a class="map-btn" href="https://maps.google.com/?cid=678883385579530422" target="_blank">📍地図</a></td>
+      </tr>
+      <tr>
+        <td><strong>稲佐の浜 第1駐車場</strong></td>
+        <td><span class="free-badge">無料</span></td>
+        <td>広め</td>
+        <td>稲佐の浜に隣接。トイレ有。お砂を取得後、徒歩15〜20分で出雲大社へ。神在月は混雑。</td>
+        <td><a class="map-btn" href="https://maps.google.com/?cid=7441859954497664921" target="_blank">📍地図</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===== ROUTE ===== -->
+<div class="sec-head">
+  <div class="sec-icon">🗺️</div>
+  <div>
+    <div class="sec-sub">VISITING ROUTE</div>
+    <div class="sec-title">正式参拝ルート（稲佐の浜〜御本殿〜神楽殿）</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="route-section">
+  <div class="flow-container">
+
+    <div class="flow-item special">
+      <div class="flow-num">前<small>準備</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🏖️ 稲佐の浜でお砂を取得</div>
+        <div class="flow-desc">出雲大社に向かう前に、必ず稲佐の浜へ。弁天島に参拝後、浜辺の砂をジップロック（2重）＋スプーンで取得。これを素鵞社で交換するのが正式ルート。</div>
+        <span class="flow-tip gold">🏅 準備物：ジップロック×2枚・スプーン・濡れてもよい靴</span>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">1<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🚗 駐車場に駐車</div>
+        <div class="flow-desc">大駐車場①（無料・385台）に駐車。混雑時は②（360台）へ。平日は比較的余裕あり。休日は8時前到着推奨。</div>
+        <span class="flow-tip">🕗 休日は8時前着が安心！</span>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">2<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">⛩️ 勢溜の大鳥居（二の鳥居）で一礼</div>
+        <div class="flow-desc">ここが参拝の正式なスタート地点。鳥居の手前で立ち止まり、軽く一礼してから境内へ。<strong>鳥居をくぐるときは中央（正中）を歩かない</strong>のがマナー。</div>
+        <span class="flow-tip">⚠️ 参道の中央は神様の通り道。端を歩こう</span>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">3<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🌲 祓橋・松の参道を進む</div>
+        <div class="flow-desc">下り坂の松並木の参道。中央の芝生エリア（下段）は歩行可。松の参道を通り身を清めるイメージで、ゆっくり歩く。両サイドのウサギの置物を探しながら歩くのも楽しい。</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">4<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">💧 手水舎で手と口を清める</div>
+        <div class="flow-desc">①右手で柄杓を持ち左手を洗う ②左手に持ち替えて右手を洗う ③左手に水を受け口をすすぐ ④最後に柄杓を立てて柄を洗い戻す。直接口に柄杓を当てない。</div>
+        <span class="flow-tip">⚠️ 柄杓に直接口をつけない</span>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">5<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🏛️ 拝殿・八足門前で参拝</div>
+        <div class="flow-desc">八足門（やつあしもん）の前で正式参拝。出雲大社の参拝作法は一般の神社と異なります。</div>
+        <span class="flow-tip" style="color:var(--deep-red);background:#FFF0EE;border-color:var(--deep-red);">🙏 ２礼・４拍手・１礼（二礼二拍手一礼ではない！）</span>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item special">
+      <div class="flow-num">6<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🏖️ 素鵞社（そがのやしろ）でお砂交換</div>
+        <div class="flow-desc">御本殿の真後ろ、八雲山のふもとにある素鵞社へ。社殿の縁の下の木箱に稲佐の浜で集めたお砂を入れ、同量のお砂を持ち帰る。このお砂は強力なお清めのお守りになる。</div>
+        <span class="flow-tip gold">⭐ お砂は木箱の中に。同量を頂戴して持ち帰る</span>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">7<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🏯 東西十九社も巡る</div>
+        <div class="flow-desc">御本殿を囲む東西の十九社。神在月（旧暦10月）には全国から集まった神々がここに宿泊すると言われている。扉の前でも参拝を。</div>
+      </div>
+    </div>
+    <div class="flow-arrow">↓</div>
+
+    <div class="flow-item">
+      <div class="flow-num">8<small>STEP</small></div>
+      <div class="flow-body">
+        <div class="flow-name">🎋 神楽殿の大注連縄を見学</div>
+        <div class="flow-desc">日本最大級の大注連縄（長さ約13.6m・重さ約5.2t）が圧巻の神楽殿へ。ここでも参拝できる。<strong>注連縄に硬貨を刺す行為は厳禁！</strong>罰則あり。</div>
+        <span class="flow-tip">⚠️ 注連縄に硬貨を刺すのは絶対NG！</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== WORSHIP METHOD ===== -->
+<div class="sec-head">
+  <div class="sec-icon">🙏</div>
+  <div>
+    <div class="sec-sub">HOW TO WORSHIP</div>
+    <div class="sec-title">出雲大社の正しい参拝作法</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="worship-section">
+  <div class="worship-cards">
+    <div class="worship-card">
+      <div class="worship-step-num">1</div>
+      <div class="worship-step-en">BOW TWICE</div>
+      <div class="worship-step-ja">２礼</div>
+      <div class="worship-step-desc">深くゆっくり2回お辞儀。背筋を伸ばし腰を90度近く折る。</div>
+    </div>
+    <div class="worship-card">
+      <div class="worship-step-num">2</div>
+      <div class="worship-step-en">CLAP FOUR TIMES</div>
+      <div class="worship-step-ja">４拍手</div>
+      <div class="worship-step-desc">手を4回打ち鳴らす。打つ前に両手をやや右にずらして。</div>
+    </div>
+    <div class="worship-card">
+      <div class="worship-step-num">3</div>
+      <div class="worship-step-en">PRAY</div>
+      <div class="worship-step-ja">祈願</div>
+      <div class="worship-step-desc">両手を合わせたまま、心を込めて祈る。住所・名前から伝えると◎</div>
+    </div>
+    <div class="worship-card">
+      <div class="worship-step-num">4</div>
+      <div class="worship-step-en">BOW ONCE</div>
+      <div class="worship-step-ja">１礼</div>
+      <div class="worship-step-desc">最後に深く1回お辞儀をして参拝完了。</div>
+    </div>
+  </div>
+  <div class="worship-note">
+    ⚠️ 一般の神社は「２礼２拍手１礼」ですが、出雲大社は「２礼<strong style="font-size:17px;margin:0 2px;">４</strong>拍手１礼」です！
+  </div>
+  <div class="worship-compare">
+    <div class="compare-box ng">
+      <div class="compare-label">❌ 一般神社・間違い</div>
+      <div class="compare-icon">🙅</div>
+      <div class="compare-text">２礼 ２拍手 １礼</div>
+      <div class="compare-sub">出雲大社ではこれはNG</div>
+    </div>
+    <div class="compare-box ok">
+      <div class="compare-label">✅ 出雲大社・正しい</div>
+      <div class="compare-icon">🙆</div>
+      <div class="compare-text">２礼 ４拍手 １礼</div>
+      <div class="compare-sub">拍手が4回！しっかり覚えて</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SAND EXCHANGE ===== -->
+<div class="sec-head">
+  <div class="sec-icon">🏖️</div>
+  <div>
+    <div class="sec-sub">SAND EXCHANGE</div>
+    <div class="sec-title">お砂取り・交換の手順</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="sand-section">
+  <div class="sand-steps">
+    <div class="sand-step">
+      <div class="sand-step-num">1</div>
+      <div class="sand-step-icon">🎒</div>
+      <div class="sand-step-title">準備する</div>
+      <div class="sand-step-desc">ジップロック2枚とスプーンを用意。二重にすると水が漏れにくい。</div>
+    </div>
+    <div class="sand-step">
+      <div class="sand-step-num">2</div>
+      <div class="sand-step-icon">🏖️</div>
+      <div class="sand-step-title">稲佐の浜</div>
+      <div class="sand-step-desc">弁天島に参拝後、波打ち際より少し上の砂をすくう。適量はスプーン3〜4杯程度。</div>
+    </div>
+    <div class="sand-step">
+      <div class="sand-step-num">3</div>
+      <div class="sand-step-icon">⛩️</div>
+      <div class="sand-step-title">素鵞社へ</div>
+      <div class="sand-step-desc">御本殿裏の素鵞社を参拝。社殿縁下の木箱を確認する。</div>
+    </div>
+    <div class="sand-step" style="border-radius:0 10px 10px 0;">
+      <div class="sand-step-num">4</div>
+      <div class="sand-step-icon">🔄</div>
+      <div class="sand-step-title">砂を交換</div>
+      <div class="sand-step-desc">持参した砂を木箱に入れ、同量の清められた砂を別の袋に入れて持ち帰る。</div>
+    </div>
+  </div>
+  <div class="sand-box">
+    <div class="sand-info-box">
+      <div class="sand-info-title">🏠 持ち帰ったお砂の使い方</div>
+      <div class="sand-info-text">家の四隅に撒く、玄関に置くなどして土地・家のお清めに使う。財布や袋に入れてお守りとしても◎。出雲大社の神様のご加護が宿るとされる。</div>
+    </div>
+    <div class="sand-info-box">
+      <div class="sand-info-title">⚠️ お砂取りの注意点</div>
+      <div class="sand-info-text">波が高い日は足元に注意。濡れてもよい靴を履くのがおすすめ。稲佐の浜は砂利っぽい砂なので乾くと締まりやすい。砂を盗難する行為は厳禁。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NG RULES ===== -->
+<div class="sec-head">
+  <div class="sec-icon">⚠️</div>
+  <div>
+    <div class="sec-sub">RULES &amp; MANNERS</div>
+    <div class="sec-title">やってはいけないこと10選</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="ng-section">
+  <div class="ng-grid">
+    <div class="ng-item">
+      <div class="ng-icon">🚶</div>
+      <div class="ng-title">参道の中央を歩く</div>
+      <div class="ng-desc">参道の真ん中（正中）は神様の通り道。端を歩くのがマナー。鳥居も端をくぐる。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">💴</div>
+      <div class="ng-title">注連縄に硬貨を刺す</div>
+      <div class="ng-desc">神楽殿の大注連縄に硬貨を刺す行為は厳禁。文化財の損傷になり罰則の対象。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">🙏</div>
+      <div class="ng-title">２拍手で参拝する</div>
+      <div class="ng-desc">出雲大社は４拍手が正式。一般神社と混同して２拍手にならないよう注意。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">📸</div>
+      <div class="ng-title">御本殿内部を撮影</div>
+      <div class="ng-desc">御本殿・拝殿の内部は撮影禁止。境内全体では撮影可だが、礼節を持って。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">🚪</div>
+      <div class="ng-title">立入禁止区域への侵入</div>
+      <div class="ng-desc">八足門の内側、御本殿周囲の立入禁止区域に無断で入ることは厳禁。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">🍺</div>
+      <div class="ng-title">飲食しながら歩く</div>
+      <div class="ng-desc">境内での飲食（食べ歩き）はマナー違反。参道の外の食事処でいただこう。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">🐕</div>
+      <div class="ng-title">ペットを連れて参拝</div>
+      <div class="ng-desc">ペットの境内への立ち入りは原則禁止。駐車場でのペット管理を。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">💬</div>
+      <div class="ng-title">大声・騒がしくする</div>
+      <div class="ng-desc">神聖な場所での大声・騒ぐ行為は厳禁。静粛に参拝者への配慮を忘れずに。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">💧</div>
+      <div class="ng-title">手水を正しく使わない</div>
+      <div class="ng-desc">柄杓に直接口をつけたり、手水舎の水で顔を洗う行為はNG。正しい作法を守る。</div>
+    </div>
+    <div class="ng-item">
+      <div class="ng-icon">🌿</div>
+      <div class="ng-title">植物・石を持ち帰る</div>
+      <div class="ng-desc">境内の植物・石・砂を無断で持ち帰るのは厳禁（素鵞社のお砂交換は除く）。</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SPOT GALLERY ===== -->
+<div class="sec-head">
+  <div class="sec-icon">📸</div>
+  <div>
+    <div class="sec-sub">MUST-SEE SPOTS</div>
+    <div class="sec-title">境内の見どころスポット</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="spots-section">
+  <div class="spot-grid">
+    <a class="spot-card" href="https://maps.google.com/?cid=762414236335045893" target="_blank">
+      <img class="spot-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNHMs9XAUxFymA0gCcSHCEGLAKQrRCEN9b7a5-NTw1j3rQYy-Y2Wcu9LLAbp1VJGP3G5dos_O-G3MBgeoIo-iU4ZbbZ3IIsEqXtdqBDrR4yxEFbVPnCmhKP_-bIjNKgRTdDvgpRnlk2abOMd5w=s600-w400-h300" alt="勢溜の大鳥居">
+      <div class="spot-body">
+        <div class="spot-name">⛩️ 勢溜の大鳥居</div>
+        <div class="spot-desc">木製の二の鳥居。参拝の正式スタート地点。ここで一礼を忘れずに。</div>
+        <div class="spot-stars">★★★★★ 4.5</div>
+      </div>
+    </a>
+    <a class="spot-card" href="https://maps.google.com/?cid=8100404179576194287" target="_blank">
+      <img class="spot-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNFXIhkrz4zznXprQ1yYeh2AnLHwKatAe9g0s5A7bcF9i2F9zYZNMnGyjWcjQBN-CK8JDvYvGbO4HDgoS-sJ9oNX_Zj1NVhJvHSUbTeOjv34QX7twlPnOPVNyCgsSqYZBv9V2tnzH935b2V7Pw=s600-w400-h300" alt="御本殿">
+      <div class="spot-body">
+        <div class="spot-name">🏛️ 御本殿・拝殿</div>
+        <div class="spot-desc">大国主大神をお祀りする本殿。高さ24mの大社造り。2礼4拍手1礼で参拝。</div>
+        <div class="spot-stars">★★★★★ 4.6</div>
+      </div>
+    </a>
+    <a class="spot-card" href="https://maps.google.com/?cid=1637970561376815487" target="_blank">
+      <img class="spot-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNH5BwYVEpzAkHWtXXfC8MSolQHYZZfy1jSIQ6GewQgWAxDH8LySEdIPYvDJJHEsoCXgp2Aca38dKblcoZSAx6_lzNf13Xv5ZWXVGyz_Q4itqlP6224FYxLjNPkQeYvBEYzTOHgitRjxdywZIw=s600-w400-h300" alt="素鵞社">
+      <div class="spot-body">
+        <div class="spot-name">🏖️ 素鵞社（お砂交換）</div>
+        <div class="spot-desc">御本殿の裏に位置するパワースポット。稲佐の浜のお砂を清められたお砂に交換する場所。</div>
+        <div class="spot-stars">★★★★★ 4.6</div>
+      </div>
+    </a>
+    <a class="spot-card" href="https://maps.google.com/?cid=5480015294536333640" target="_blank">
+      <img class="spot-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNESjwZbvs7GOEm6j6OS40XdANXTd6P1FBx5srzbI3CvYL9en0LZQkLFerokcARk1r6iKnFHQnRqQpjpPzb5LEVVaqOB1ZwEXpdMvNFu8MGFu9t9ktRz4ka_PXqsbBi0_9uuXRBPa8MDIlXzodzkEpuj=s600-w400-h300" alt="神楽殿">
+      <div class="spot-body">
+        <div class="spot-name">🎋 神楽殿・大注連縄</div>
+        <div class="spot-desc">長さ13.6m・重さ5.2tの日本最大級の注連縄。結婚式場でもある。硬貨を刺すのは厳禁！</div>
+        <div class="spot-stars">★★★★★ 4.6</div>
+      </div>
+    </a>
+    <a class="spot-card" href="https://maps.google.com/?cid=7441859954497664921" target="_blank">
+      <img class="spot-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNGIkMacvWT6ktb-ZHzY2iY6Xe5aezz-0KPJWMQAoezDniTXWFSYfqFGOHZ4NJj_r_ybo4Mo9FhmSvh17UctatA7900KrRXjcweLHx4klu0pvYWKVtX54_n9CzbLRiGFrZAVzY2QOI0eB0ox=s600-w400-h300" alt="稲佐の浜">
+      <div class="spot-body">
+        <div class="spot-name">🏝️ 稲佐の浜・弁天島</div>
+        <div class="spot-desc">神々が降り立つ聖なる浜。出雲大社参拝前に必ず立ち寄り、お砂を取得する。</div>
+        <div class="spot-stars">★★★★★ 4.5</div>
+      </div>
+    </a>
+    <a class="spot-card" href="https://izumooyashiro.or.jp/precinct/zeniki" target="_blank">
+      <img class="spot-img" src="https://lh3.googleusercontent.com/place-photos/AL8-SNGQBAwV4xqSl9Uy70cVQGshozXNQkTUmG4nHolfuh_jRiTCt236-wmAZGR7y5CQnyG7gewtkCJgnpm0OBUMgmGRZ0BNAl2E5bBWqoE8t2pN9QPABOXnZE77txeAJFQgsmFWjDHrzKTEj244BA=s600-w400-h300" alt="松の参道">
+      <div class="spot-body">
+        <div class="spot-name">🌲 松の参道</div>
+        <div class="spot-desc">下り坂に並ぶ松並木の参道。左右のウサギの置物を数えながら歩くのが楽しい。</div>
+        <div class="spot-stars">★★★★★ 4.6</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- ===== INFO ===== -->
+<div class="sec-head">
+  <div class="sec-icon">ℹ️</div>
+  <div>
+    <div class="sec-sub">BASIC INFO</div>
+    <div class="sec-title">基本情報・持ち物チェックリスト</div>
+  </div>
+</div>
+<div class="sec-line"></div>
+<div class="info-section">
+  <div class="info-grid">
+    <div class="info-box">
+      <div class="info-box-title">🕐 開門時間</div>
+      <div class="info-row"><span class="info-label">参拝時間（通常期）</span><span class="info-val">6:30〜17:00</span></div>
+      <div class="info-row"><span class="info-label">参拝時間（5月〜10月）</span><span class="info-val">6:00〜17:00</span></div>
+      <div class="info-row"><span class="info-label">神楽殿</span><span class="info-val">7:00〜18:00</span></div>
+      <div class="info-row"><span class="info-label">素鵞社</span><span class="info-val">6:00〜16:30</span></div>
+      <div class="info-row"><span class="info-label">宝物殿（神祜殿）</span><span class="info-val">8:30〜17:00（有料200円）</span></div>
+      <div class="info-row"><span class="info-label">境内（外）</span><span class="info-val">24時間開放</span></div>
+      <div class="info-row"><span class="info-label">お問い合わせ</span><span class="info-val">0853-53-3100</span></div>
+    </div>
+    <div class="info-box">
+      <div class="info-box-title">🎒 持ち物チェックリスト</div>
+      <ul class="checklist">
+        <li>ジップロック（2枚・稲佐の浜のお砂用）</li>
+        <li>スプーン（お砂をすくう用）</li>
+        <li>歩きやすいスニーカー（砂利や坂道が多い）</li>
+        <li>小銭（お賽銭用・自販機用）</li>
+        <li>御朱印帳（希望の方）</li>
+        <li>雨具・折りたたみ傘（天候変わりやすい）</li>
+        <li>飲み物（参道の外で購入推奨）</li>
+        <li>カメラ（御本殿内は撮影禁止）</li>
+        <li>このガイドのスクリーンショット📸</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  出雲大社 完全参拝ガイド ／ 情報は変更になる場合があります ／
+  <a href="https://izumooyashiro.or.jp" target="_blank">公式サイト：izumooyashiro.or.jp</a>
+</div>
+
+</body>
+</html>
